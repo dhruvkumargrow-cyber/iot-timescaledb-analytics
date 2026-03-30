@@ -1,9 +1,16 @@
-import streamlit as st
+
 import psycopg2
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-from config import HOST, PORT, DBNAME, USER, PASSWORD
+import streamlit as st
+import os
+
+HOST     = st.secrets.get("DB_HOST", os.environ.get("DB_HOST", ""))
+PORT     = int(st.secrets.get("DB_PORT", os.environ.get("DB_PORT", "39045")))
+DBNAME   = st.secrets.get("DB_NAME", os.environ.get("DB_NAME", "tsdb"))
+USER     = st.secrets.get("DB_USER", os.environ.get("DB_USER", "tsdbadmin"))
+PASSWORD = st.secrets.get("DB_PASSWORD", os.environ.get("DB_PASSWORD", ""))
 
 # ── Page config ───────────────────────────────────────
 st.set_page_config(
@@ -156,7 +163,7 @@ df = pd.read_sql(f"""
 if df.empty:
     st.warning(f"⚠️ No sensor data available for the last {days} day(s). Try increasing the time range to 7+ days.")
     st.stop()
-    
+
 st.markdown("### 📊 Live Metrics")
 c1, c2, c3, c4, c5 = st.columns(5)
 
